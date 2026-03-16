@@ -8,10 +8,11 @@ Example 1:
 
 ```sql
 -- Find customers who paid between $3 and $4
-SELECT first_name,last_name 
-  FROM customer,payment 
- WHERE customer.customer_id = payment.customer_id 
-   AND payment.amount BETWEEN 3 AND 4; 
+SELECT first_name,last_name
+FROM customer c
+JOIN payment p 
+  ON c.customer_id = p.customer_id
+WHERE p.amount BETWEEN 3 AND 4; 
 ```
 
 ```sql
@@ -22,7 +23,8 @@ SELECT first_name,last_name
                         WHERE amount BETWEEN 3 AND 4); 
 ```
 
-Just adding DISTINCT to the first query gives us the same result.
+The first query returns one row per payment.
+If we add DISTINCT, duplicated customers are removed and the result becomes equivalent to the subquery version.
 
 Example 2:
 
@@ -45,9 +47,10 @@ SELECT first_name
  ORDER BY first_name; 
 ```
 
-In this case, adding DISTINCT gives us the wrong result. So we have to use a subquery.
+Adding DISTINCT would remove duplicates, but the query would still behave differently because the join produces one row per payment.
+The subquery version directly filters customers and avoids duplicates naturally.
 
-### EXCEPT as subquery
+### Using multiple subqueries with IN and NOT IN
 
 ```sql
 SELECT first_name, last_name 
@@ -87,6 +90,8 @@ SELECT first_name,last_name
                 WHERE c1.first_name = c2.first_name 
                   AND c1.customer_id <> c2.customer_id) 
 ```
+
+-- EXISTS stops scanning as soon as it finds one matching row
 
 #### Finding max
 
